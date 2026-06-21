@@ -1,0 +1,218 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+
+    background:
+    radial-gradient(
+    circle at top left,
+    rgba(76,175,80,0.15),
+    transparent 35%),
+
+    radial-gradient(
+    circle at bottom right,
+    rgba(139,195,74,0.15),
+    transparent 35%),
+
+    linear-gradient(
+    135deg,
+    #f8fff8,
+    #eefaf0);
+
+    min-height:100vh;
+
+    padding:40px;
+}
+
+.dashboard-container{
+
+    max-width:1200px;
+
+    margin:auto;
+}
+
+/* LOGO */
+
+.dashboard-logo{
+
+    width:140px;
+
+    display:block;
+
+    margin:0 auto 15px auto;
+}
+
+/* TITLE */
+
+h1{
+
+    text-align:center;
+
+    color:#1b5e20;
+
+    margin-bottom:35px;
+
+    font-size:3rem;
+}
+
+/* STATS */
+
+.stats-container{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:50px;
+}
+
+.stat-card{
+
+    background:white;
+
+    width:280px;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,0.08);
+}
+
+.stat-card h2{
+
+    color:#2e7d32;
+
+    font-size:2.5rem;
+
+    margin-bottom:10px;
+}
+
+.stat-card p{
+
+    font-size:1.1rem;
+}
+
+/* SECTION TITLE */
+
+.section-heading{
+
+    color:#1b5e20;
+
+    margin-bottom:20px;
+
+    font-size:2rem;
+}
+
+/* TABLE */
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    background:white;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,0.08);
+
+    margin-bottom:40px;
+}
+
+th{
+
+    background:#2e7d32;
+
+    color:white;
+
+    padding:18px;
+
+    font-size:1.05rem;
+}
+
+td{
+
+    text-align:center;
+
+    padding:18px;
+
+    border-bottom:1px solid #eee;
+}
+
+/* AI PANEL */
+
+.ai-panel{
+
+    background:#f3fff3;
+
+    border-left:6px solid #2e7d32;
+
+    padding:30px;
+
+    border-radius:18px;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,0.08);
+}
+
+.ai-panel h2{
+
+    color:#1b5e20;
+
+    margin-bottom:20px;
+}
+
+.ai-panel p{
+
+    margin-bottom:12px;
+
+    line-height:1.8;
+
+    font-size:1.05rem;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    body{
+
+        padding:20px;
+    }
+
+    .dashboard-logo{
+
+        width:110px;
+    }
+
+    h1{
+
+        font-size:2rem;
+    }
+
+    .stat-card{
+
+        width:100%;
+    }
+
+    table{
+
+        font-size:0.9rem;
+    }
+}
