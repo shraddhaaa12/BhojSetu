@@ -5,16 +5,14 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Donate Food | BhojSetu</title>
 
-    <link rel="stylesheet"
-          href="donate.css">
+    <link rel="stylesheet" href="donate.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet">
+        rel="stylesheet">
 
 </head>
 
@@ -32,14 +30,16 @@
             Help reduce food waste by donating surplus food.
         </p>
 
-        <form>
+        <form id="donationForm">
 
             <div class="input-group">
 
                 <label>Donor Name</label>
 
                 <input type="text"
-                       placeholder="Enter your name">
+                       id="donorName"
+                       placeholder="Enter your name"
+                       required>
 
             </div>
 
@@ -48,7 +48,9 @@
                 <label>Phone Number</label>
 
                 <input type="tel"
-                       placeholder="Enter phone number">
+                       id="phone"
+                       placeholder="Enter phone number"
+                       required>
 
             </div>
 
@@ -57,7 +59,9 @@
                 <label>Location</label>
 
                 <input type="text"
-                       placeholder="Enter pickup location">
+                       id="location"
+                       placeholder="Enter pickup location"
+                       required>
 
             </div>
 
@@ -65,9 +69,9 @@
 
                 <label>Food Type</label>
 
-                <select>
+                <select id="foodType" required>
 
-                    <option>Select Food Type</option>
+                    <option value="">Select Food Type</option>
 
                     <option>Cooked Food</option>
 
@@ -83,9 +87,9 @@
 
                 <label>Food Quality Status</label>
 
-                <select>
+                <select id="qualityStatus" required>
 
-                    <option>Select Status</option>
+                    <option value="">Select Status</option>
 
                     <option>Freshly Prepared (0–4 Hours)</option>
 
@@ -102,7 +106,9 @@
                 <label>Quantity</label>
 
                 <input type="text"
-                       placeholder="Example: Serves 20 people">
+                       id="quantity"
+                       placeholder="Example: Serves 20 people"
+                       required>
 
             </div>
 
@@ -110,7 +116,9 @@
 
                 <label>Pickup Time</label>
 
-                <input type="time">
+                <input type="time"
+                       id="pickupTime"
+                       required>
 
             </div>
 
@@ -118,7 +126,9 @@
 
                 <label>Expiry / Best Before Time</label>
 
-                <input type="datetime-local">
+                <input type="datetime-local"
+                       id="expiryTime"
+                       required>
 
             </div>
 
@@ -126,7 +136,8 @@
 
                 <label>Additional Notes</label>
 
-                <textarea rows="4"
+                <textarea id="notes"
+                          rows="4"
                           placeholder="Any special instructions"></textarea>
 
             </div>
@@ -138,7 +149,8 @@
             <div class="checkbox-group">
 
                 <input type="checkbox"
-                       id="confirm">
+                       id="confirm"
+                       required>
 
                 <label for="confirm">
 
@@ -158,6 +170,80 @@
         </form>
 
     </div>
+
+    <script>
+
+        document.getElementById("donationForm")
+            .addEventListener("submit", async function (e) {
+
+                e.preventDefault();
+
+                const donationData = {
+
+                    donorName:
+                        document.getElementById("donorName").value,
+
+                    phone:
+                        document.getElementById("phone").value,
+
+                    location:
+                        document.getElementById("location").value,
+
+                    foodType:
+                        document.getElementById("foodType").value,
+
+                    qualityStatus:
+                        document.getElementById("qualityStatus").value,
+
+                    quantity:
+                        document.getElementById("quantity").value,
+
+                    pickupTime:
+                        document.getElementById("pickupTime").value,
+
+                    expiryTime:
+                        document.getElementById("expiryTime").value,
+
+                    notes:
+                        document.getElementById("notes").value
+
+                };
+
+                try {
+
+                    const response = await fetch(
+                        "http://localhost:3000/donate",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(donationData)
+                        }
+                    );
+
+                    const result = await response.json();
+
+                    alert(
+    result.message +
+    "\n\nDonation ID: " +
+    result.donationId
+);
+                    document.getElementById("donationForm").reset();
+
+                }
+
+                catch (error) {
+
+                    alert("Error connecting to server.");
+
+                    console.error(error);
+
+                }
+
+            });
+
+    </script>
 
 </body>
 

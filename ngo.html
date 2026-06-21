@@ -32,14 +32,16 @@
             Register your NGO to receive and distribute food donations.
         </p>
 
-        <form>
+        <form id="ngoForm">
 
             <div class="input-group">
 
                 <label>NGO Name</label>
 
                 <input type="text"
-                       placeholder="Enter NGO name">
+                       id="ngoName"
+                       placeholder="Enter NGO name"
+                       required>
 
             </div>
 
@@ -48,7 +50,9 @@
                 <label>Registration Number</label>
 
                 <input type="text"
-                       placeholder="Enter registration number">
+                       id="registrationNumber"
+                       placeholder="Enter registration number"
+                       required>
 
             </div>
 
@@ -57,7 +61,9 @@
                 <label>Contact Person</label>
 
                 <input type="text"
-                       placeholder="Enter contact person name">
+                       id="contactPerson"
+                       placeholder="Enter contact person name"
+                       required>
 
             </div>
 
@@ -66,7 +72,9 @@
                 <label>Phone Number</label>
 
                 <input type="tel"
-                       placeholder="Enter phone number">
+                       id="phone"
+                       placeholder="Enter phone number"
+                       required>
 
             </div>
 
@@ -75,7 +83,9 @@
                 <label>Email Address</label>
 
                 <input type="email"
-                       placeholder="Enter email address">
+                       id="email"
+                       placeholder="Enter email address"
+                       required>
 
             </div>
 
@@ -83,8 +93,10 @@
 
                 <label>NGO Address</label>
 
-                <textarea rows="3"
-                          placeholder="Enter NGO address"></textarea>
+                <textarea id="address"
+                          rows="3"
+                          placeholder="Enter NGO address"
+                          required></textarea>
 
             </div>
 
@@ -93,7 +105,9 @@
                 <label>Areas Served</label>
 
                 <input type="text"
-                       placeholder="Example: Noida, Greater Noida, Ghaziabad">
+                       id="areasServed"
+                       placeholder="Example: Noida, Greater Noida, Ghaziabad"
+                       required>
 
             </div>
 
@@ -107,6 +121,72 @@
 
     </div>
 
+    <script>
+
+        document.getElementById("ngoForm")
+            .addEventListener("submit", async function (e) {
+
+                e.preventDefault();
+
+                const ngoData = {
+
+                    ngoName:
+                        document.getElementById("ngoName").value,
+
+                    registrationNumber:
+                        document.getElementById("registrationNumber").value,
+
+                    contactPerson:
+                        document.getElementById("contactPerson").value,
+
+                    phone:
+                        document.getElementById("phone").value,
+
+                    email:
+                        document.getElementById("email").value,
+
+                    address:
+                        document.getElementById("address").value,
+
+                    areasServed:
+                        document.getElementById("areasServed").value
+
+                };
+
+                try {
+
+                    const response = await fetch(
+                        "http://localhost:3000/ngo",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(ngoData)
+                        }
+                    );
+
+                    const result = await response.json();
+
+                    alert(result.message);
+
+                    document.getElementById("ngoForm").reset();
+
+                }
+
+                catch (error) {
+
+                    alert("Error connecting to server.");
+
+                    console.error(error);
+
+                }
+
+            });
+
+    </script>
+
 </body>
 
 </html>
+

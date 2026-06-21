@@ -1,66 +1,88 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | BhojSetu</title>
 
-    <link rel="stylesheet" href="dashboard.css">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard | BhojSetu</title>
+
+<link rel="stylesheet"
+      href="dashboard.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet">
+
+
 </head>
 
 <body>
 
-    <div class="dashboard-container">
 
-        <!-- LOGO -->
+<div class="dashboard-container">
 
-        <img src="logo.png"
-             alt="BhojSetu Logo"
-             class="dashboard-logo">
+    <!-- LOGO -->
 
-        <h1>Dashboard</h1>
+    <img src="logo.png"
+         alt="BhojSetu Logo"
+         class="dashboard-logo">
 
-        <!-- STATS -->
+    <h1>Dashboard</h1>
 
-        <div class="stats-container">
+    <!-- STATS -->
 
-            <div class="stat-card">
+    <div class="stats-container">
 
-                <h2>125</h2>
+        <div class="stat-card">
 
-                <p>Total Donations</p>
+            <h2 id="totalDonations">0</h2>
 
-            </div>
-
-            <div class="stat-card">
-
-                <h2>18</h2>
-
-                <p>Partner NGOs</p>
-
-            </div>
-
-            <div class="stat-card">
-
-                <h2>2400+</h2>
-
-                <p>Meals Saved</p>
-
-            </div>
+            <p>Total Donations</p>
 
         </div>
 
-        <!-- DONATION TABLE -->
+        <div class="stat-card">
 
-        <h2 class="section-heading">
-            Current Food Donations
-        </h2>
+            <h2 id="totalNGOs">0</h2>
 
-        <table>
+            <p>Partner NGOs</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2 id="mealsSaved">0</h2>
+
+            <p>Meals Saved</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2 id="citiesCovered">0</h2>
+
+            <p>Cities Covered</p>
+
+        </div>
+
+    </div>
+
+    <!-- DONATIONS TABLE -->
+
+    <h2 class="section-heading">
+
+        Current Food Donations
+
+    </h2>
+
+    <table>
+
+        <thead>
 
             <tr>
 
@@ -71,61 +93,202 @@
 
             </tr>
 
-            <tr>
+        </thead>
 
-                <td>Cooked Food</td>
-                <td>Serves 25</td>
-                <td>Noida</td>
-                <td>Pending Pickup</td>
+        <tbody id="donationTable">
 
-            </tr>
+        </tbody>
 
-            <tr>
+    </table>
 
-                <td>Packed Food</td>
-                <td>40 Packets</td>
-                <td>Greater Noida</td>
-                <td>Assigned</td>
+    <!-- AI PANEL -->
 
-            </tr>
+    <div class="ai-panel">
 
-            <tr>
+        <h2>🤖 AI Recommendation</h2>
 
-                <td>Raw Food</td>
-                <td>15 Kg</td>
-                <td>Ghaziabad</td>
-                <td>Delivered</td>
+        <p>
+            <strong>Priority:</strong> HIGH
+        </p>
 
-            </tr>
+        <p>
+            <strong>Suggested NGO:</strong>
+            Helping Hand Foundation | ✅ Verified NGO
+        </p>
 
-        </table>
+        <p class="reliability">
+            <strong>Reliability Score:</strong>
+            4.9 / 5 ⭐
+        </p>
 
-        <!-- AI PANEL -->
-
-        <div class="ai-panel">
-
-            <h2>🤖 AI Recommendation</h2>
-
-<p><strong>Priority:</strong> HIGH</p>
-
-<p>
-<strong>Suggested NGO:</strong>
-Helping Hands Foundation | ✅ Verified NGO
-</p>
-
-<p class="reliability">
-<strong>Reliability Score:</strong>
-4.9 / 5 ⭐
-</p>
-
-<p>
-<strong>Reason:</strong>
-Closest NGO with available capacity and immediate pickup availability.
-</p>
-
-        </div>
+        <p>
+            <strong>Reason:</strong>
+            Closest NGO with available capacity and immediate pickup availability.
+        </p>
 
     </div>
+
+    <!-- NGO TABLE -->
+
+    <h2 class="section-heading">
+
+        Registered NGOs
+
+    </h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>NGO Name</th>
+                <th>Contact Person</th>
+                <th>Area Served</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="ngoTable">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+    async function loadDashboard() {
+
+        try {
+
+            const donationResponse =
+                await fetch("http://localhost:3000/donations");
+
+            const donations =
+                await donationResponse.json();
+
+            const ngoResponse =
+                await fetch("http://localhost:3000/ngos");
+
+            const ngos =
+                await ngoResponse.json();
+
+
+            // STATS
+
+            document.getElementById(
+                "totalDonations"
+            ).innerText = donations.length;
+
+            document.getElementById(
+                "totalNGOs"
+            ).innerText = ngos.length;
+
+            document.getElementById(
+                "mealsSaved"
+            ).innerText = donations.length * 10;
+
+
+            // CITIES COVERED
+
+            const uniqueCities = [
+
+                ...new Set(
+
+                    donations.map(
+                        donation =>
+                            donation.location
+                                .trim()
+                                .toLowerCase()
+                    )
+
+                )
+
+            ];
+
+            document.getElementById(
+                "citiesCovered"
+            ).innerText =
+                uniqueCities.length;
+
+
+            // DONATION TABLE
+
+            const donationTable =
+                document.getElementById(
+                    "donationTable"
+                );
+
+            donationTable.innerHTML = "";
+
+            donations.forEach(donation => {
+
+                donationTable.innerHTML += `
+
+                <tr>
+
+                    <td>${donation.foodType}</td>
+
+                    <td>${donation.quantity}</td>
+
+                    <td>${donation.location}</td>
+
+                    <td>Pending Pickup</td>
+
+                </tr>
+
+                `;
+
+            });
+
+
+            // NGO TABLE
+
+            const ngoTable =
+                document.getElementById(
+                    "ngoTable"
+                );
+
+            ngoTable.innerHTML = "";
+
+            ngos.forEach(ngo => {
+
+                ngoTable.innerHTML += `
+
+                <tr>
+
+                    <td>${ngo.ngoName}</td>
+
+                    <td>${ngo.contactPerson}</td>
+
+                    <td>${ngo.areasServed}</td>
+
+                </tr>
+
+                `;
+
+            });
+
+        }
+
+        catch(error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to load dashboard data."
+            );
+
+        }
+
+    }
+
+    loadDashboard();
+
+</script>
 
 </body>
 
