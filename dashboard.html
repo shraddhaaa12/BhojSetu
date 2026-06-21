@@ -168,133 +168,222 @@
 
 <script>
 
-    async function loadDashboard() {
+async function loadDashboard() {
 
-        try {
+    try {
 
-            const donationResponse =
-                await fetch("http://localhost:3000/donations");
+        const donationResponse =
+            await fetch("http://localhost:3000/donations");
 
-            const donations =
-                await donationResponse.json();
+        const donations =
+            await donationResponse.json();
 
-            const ngoResponse =
-                await fetch("http://localhost:3000/ngos");
+        const ngoResponse =
+            await fetch("http://localhost:3000/ngos");
 
-            const ngos =
-                await ngoResponse.json();
+        const ngos =
+            await ngoResponse.json();
 
+        // TOTAL DONATIONS
 
-            // STATS
+        document.getElementById(
+            "totalDonations"
+        ).innerText =
+            donations.length;
 
-            document.getElementById(
-                "totalDonations"
-            ).innerText = donations.length;
+        // TOTAL NGOs
 
-            document.getElementById(
-                "totalNGOs"
-            ).innerText = ngos.length;
+        document.getElementById(
+            "totalNGOs"
+        ).innerText =
+            ngos.length;
 
-            document.getElementById(
-                "mealsSaved"
-            ).innerText = donations.length * 10;
+        // MEALS SAVED
 
+        let totalMeals = 0;
 
-            // CITIES COVERED
+        donations.forEach(donation => {
 
-            const uniqueCities = [
+            const mealCount =
+                parseInt(
+                    String(donation.quantity)
+                        .replace(/[^0-9]/g, "")
+                ) || 0;
 
-                ...new Set(
+            totalMeals += mealCount;
 
-                    donations.map(
-                        donation =>
-                            donation.location
-                                .trim()
-                                .toLowerCase()
-                    )
+        });
 
+        document.getElementById(
+            "mealsSaved"
+        ).innerText =
+            totalMeals;
+
+        // CITIES COVERED
+
+        const uniqueCities = [
+
+            ...new Set(
+
+                donations.map(
+                    donation =>
+                        donation.location
+                            .trim()
+                            .toLowerCase()
                 )
 
-            ];
+            )
+
+        ];
+
+        document.getElementById(
+            "citiesCovered"
+        ).innerText =
+            uniqueCities.length;
+
+        // DONATION TABLE
+
+        const donationTable =
+            document.getElementById(
+                "donationTable"
+            );
+
+        donationTable.innerHTML = "";
+
+        donations.forEach(donation => {
+
+            donationTable.innerHTML += `
+
+            <tr>
+
+                <td>${donation.foodType || "-"}</td>
+
+                <td>${donation.quantity || "-"}</td>
+
+                <td>${donation.location || "-"}</td>
+
+                <td>Pending Pickup</td>
+
+            </tr>
+
+            `;
+
+        });
+
+        // NGO TABLE
+
+        const ngoTable =
+            document.getElementById(
+                "ngoTable"
+            );
+
+        ngoTable.innerHTML = "";
+
+        ngos.forEach(ngo => {
+
+            ngoTable.innerHTML += `
+
+            <tr>
+
+                <td>${ngo.ngoName || "-"}</td>
+
+                <td>${ngo.contactPerson || "-"}</td>
+
+                <td>${ngo.areasServed || "-"}</td>
+
+            </tr>
+
+            `;
+
+        });
+
+        // AI RECOMMENDATION
+
+        if (
+            donations.length > 0 &&
+            ngos.length > 0
+        ) {
+
+            const latestDonation =
+                donations[
+                    donations.length - 1
+                ];
+
+            const suggestedNgo =
+                ngos[
+                    Math.floor(
+                        Math.random() *
+                        ngos.length
+                    )
+                ];
 
             document.getElementById(
-                "citiesCovered"
+                "recommendedNgo"
             ).innerText =
-                uniqueCities.length;
+                suggestedNgo.ngoName;
 
-
-            // DONATION TABLE
-
-            const donationTable =
-                document.getElementById(
-                    "donationTable"
-                );
-
-            donationTable.innerHTML = "";
-
-            donations.forEach(donation => {
-
-                donationTable.innerHTML += `
-
-                <tr>
-
-                    <td>${donation.foodType}</td>
-
-                    <td>${donation.quantity}</td>
-
-                    <td>${donation.location}</td>
-
-                    <td>Pending Pickup</td>
-
-                </tr>
-
-                `;
-
-            });
-
-
-            // NGO TABLE
-
-            const ngoTable =
-                document.getElementById(
-                    "ngoTable"
-                );
-
-            ngoTable.innerHTML = "";
-
-            ngos.forEach(ngo => {
-
-                ngoTable.innerHTML += `
-
-                <tr>
-
-                    <td>${ngo.ngoName}</td>
-
-                    <td>${ngo.contactPerson}</td>
-
-                    <td>${ngo.areasServed}</td>
-
-                </tr>
-
-                `;
-
-            });
+            document.getElementById(
+                "recommendationReason"
+            ).innerText =
+                `Recommended for ${latestDonation.foodType} donation at ${latestDonation.location}`;
 
         }
 
-        catch(error) {
+        else if (
+            donations.length === 0
+        ) {
 
-            console.error(error);
+            document.getElementById(
+                "recommendedNgo"
+            ).innerText =
+                "No Donations Found";
 
-            alert(
-                "Unable to load dashboard data."
-            );
+            document.getElementById(
+                "recommendationReason"
+            ).innerText =
+                "Add a donation first";
+
+        }
+
+        else {
+
+            document.getElementById(
+                "recommendedNgo"
+            ).innerText =
+                "No NGO Registered";
+
+            document.getElementById(
+                "recommendationReason"
+            ).innerText =
+                "Register NGOs first";
 
         }
 
     }
 
-    loadDashboard();
+    catch (error) {
+
+        console.error(error);
+
+        document.getElementById(
+            "recommendedNgo"
+        ).innerText =
+            "Server Offline";
+
+        document.getElementById(
+            "recommendationReason"
+        ).innerText =
+            "Unable to fetch data";
+
+        alert(
+            "Unable to load dashboard data."
+        );
+
+    }
+
+}
+
+loadDashboard();
 
 </script>
 
