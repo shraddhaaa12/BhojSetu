@@ -246,41 +246,112 @@
     <div class="impact-grid">
 
         <div class="impact-card">
-
-            <h3>125+</h3>
-
+            <h3 id="impactDonations">0</h3>
             <p>Food Donations</p>
-
         </div>
 
         <div class="impact-card">
-
-            <h3>18+</h3>
-
+            <h3 id="impactNGOs">0</h3>
             <p>Partner NGOs</p>
-
         </div>
 
         <div class="impact-card">
-
-            <h3>2400+</h3>
-
+            <h3 id="impactMeals">0</h3>
             <p>Meals Saved</p>
-
         </div>
 
         <div class="impact-card">
-
-            <h3>15+</h3>
-
+            <h3 id="impactCities">0</h3>
             <p>Cities Covered</p>
-
         </div>
 
     </div>
 
 </section>
 
+
+</section>
+
+<script>
+
+async function loadImpactStats() {
+
+    try {
+
+        const donationResponse =
+            await fetch("http://localhost:3000/donations");
+
+        const donations =
+            await donationResponse.json();
+
+        const ngoResponse =
+            await fetch("http://localhost:3000/ngos");
+
+        const ngos =
+            await ngoResponse.json();
+
+        document.getElementById(
+            "impactDonations"
+        ).innerText =
+            donations.length;
+
+        document.getElementById(
+            "impactNGOs"
+        ).innerText =
+            ngos.length;
+
+        let totalMeals = 0;
+
+        donations.forEach(donation => {
+
+            const meals =
+                parseInt(
+                    String(donation.quantity)
+                        .replace(/[^0-9]/g, "")
+                ) || 0;
+
+            totalMeals += meals;
+
+        });
+
+        document.getElementById(
+            "impactMeals"
+        ).innerText =
+            totalMeals;
+
+        const uniqueCities = [
+
+            ...new Set(
+
+                donations.map(
+                    donation =>
+                        donation.location
+                            .trim()
+                            .toLowerCase()
+                )
+
+            )
+
+        ];
+
+        document.getElementById(
+            "impactCities"
+        ).innerText =
+            uniqueCities.length;
+
+    }
+
+    catch(error) {
+
+        console.error(error);
+
+    }
+
+}
+
+loadImpactStats();
+
+</script>
 
     <!-- FOOTER -->
 <footer id="footer">
