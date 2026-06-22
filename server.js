@@ -20,8 +20,6 @@ app.post("/donate", (req, res) => {
         "BS-" + String(Date.now()).slice(-6);
 
     donation.donationId = donationId;
-    donation.status =
-        donation.status || "Pending Pickup";
 
     let donations = [];
 
@@ -34,7 +32,7 @@ app.post("/donate", (req, res) => {
             )
         );
 
-    } catch {
+    } catch (error) {
 
         donations = [];
 
@@ -52,10 +50,10 @@ app.post("/donate", (req, res) => {
     );
 
     res.json({
-        success: true,
-        donationId,
         message:
-            "Donation Saved Successfully"
+            "Donation Saved Successfully",
+        donationId:
+            donationId
     });
 
 });
@@ -80,7 +78,7 @@ app.post("/ngo", (req, res) => {
             )
         );
 
-    } catch {
+    } catch (error) {
 
         ngos = [];
 
@@ -98,7 +96,6 @@ app.post("/ngo", (req, res) => {
     );
 
     res.json({
-        success: true,
         message:
             "NGO Registered Successfully"
     });
@@ -123,7 +120,7 @@ app.get("/donations", (req, res) => {
             )
         );
 
-    } catch {
+    } catch (error) {
 
         donations = [];
 
@@ -151,7 +148,7 @@ app.get("/ngos", (req, res) => {
             )
         );
 
-    } catch {
+    } catch (error) {
 
         ngos = [];
 
@@ -163,207 +160,14 @@ app.get("/ngos", (req, res) => {
 
 
 // =========================
-// AI RECOMMENDATION
+// SERVER START
 // =========================
 
-app.get("/recommendation", (req, res) => {
+app.listen(3000, () => {
 
-    let donations = [];
-    let ngos = [];
-
-    try {
-
-        donations = JSON.parse(
-            fs.readFileSync(
-                "./data/donations.json",
-                "utf8"
-            )
-        );
-
-    } catch {
-
-        donations = [];
-
-    }
-
-    try {
-
-        ngos = JSON.parse(
-            fs.readFileSync(
-                "./data/ngos.json",
-                "utf8"
-            )
-        );
-
-    } catch {
-
-        ngos = [];
-
-    }
-
-    if (donations.length === 0) {
-
-        return res.json({
-            priority: "LOW",
-            ngo: "No Donation Available",
-            reason: "No donations found"
-        });
-
-    }
-
-    if (ngos.length === 0) {
-
-        return res.json({
-            priority: "HIGH",
-            ngo: "No NGO Registered",
-            reason:
-                "Please register NGOs first"
-        });
-
-    }
-
-    const latestDonation =
-        donations[donations.length - 1];
-
-    const suggestedNgo =
-        ngos[
-            Math.floor(
-                Math.random() * ngos.length
-            )
-        ];
-
-    res.json({
-
-        priority: "HIGH",
-
-        ngo:
-            suggestedNgo.ngoName ||
-            suggestedNgo.name ||
-            suggestedNgo.organization ||
-            "Helping Hands NGO",
-
-        reason:
-            `${latestDonation.foodType || "Food"} available at ${latestDonation.location || "Unknown Location"}`
-
-    });
+    console.log(
+        "Server running on http://localhost:3000"
+    );
 
 });
 
-
-// =========================
-// IMPACT STATS
-// =========================
-
-app.get("/impact", (req, res) => {
-
-    let donations = [];
-
-    try {
-
-        donations = JSON.parse(
-            fs.readFileSync(
-                "./data/donations.json",
-                "utf8"
-            )
-        );
-
-    } catch {
-
-        donations = [];
-
-    }
-
-    let totalMeals = 0;
-
-    donations.forEach(donation => {
-
-        const meals =
-            parseInt(
-                String(
-                    donation.quantity
-                ).replace(
-                    /[^0-9]/g,
-                    ""
-                )
-            ) || 0;
-
-        totalMeals += meals;
-
-    });
-
-    const uniqueCities = [
-
-        ...new Set(
-
-            donations.map(
-                donation =>
-                    donation.location
-                        ?.trim()
-                        ?.toLowerCase()
-            )
-
-        )
-
-    ];
-
-    res.json({
-
-        totalDonations:
-            donations.length,
-
-        mealsServed:
-            totalMeals,
-
-        citiesCovered:
-            uniqueCities.length,
-
-        foodSavedKg:
-            donations.length * 5,
-
-        co2SavedKg:
-            donations.length * 2
-
-    });
-
-});
-
-
-// =========================
-// HOME TEST ROUTE
-// =========================
-
-app.get("/", (req, res) => {
-
-    res.json({
-        message:
-            "BhojSetu Backend Running Successfully"
-    });
-
-});
-
-
-// =========================
-// LOCALHOST SERVER
-// =========================
-
-if (
-    process.env.NODE_ENV !==
-    "production"
-) {
-
-    app.listen(3000, () => {
-
-        console.log(
-            "Server running on http://localhost:3000"
-        );
-
-    });
-
-}
-
-
-// =========================
-// EXPORT FOR VERCEL
-// =========================
-
-module.exports = app;
