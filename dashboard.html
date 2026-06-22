@@ -34,7 +34,7 @@
 
         <div class="stat-card">
 
-            <h2 id="totalDonations">0</h2>
+            <h2>4</h2>
 
             <p>Total Donations</p>
 
@@ -42,7 +42,7 @@
 
         <div class="stat-card">
 
-            <h2 id="totalNGOs">0</h2>
+            <h2>2</h2>
 
             <p>Partner NGOs</p>
 
@@ -50,7 +50,7 @@
 
         <div class="stat-card">
 
-            <h2 id="mealsSaved">0</h2>
+            <h2>40</h2>
 
             <p>Meals Saved</p>
 
@@ -58,7 +58,7 @@
 
         <div class="stat-card">
 
-            <h2 id="citiesCovered">0</h2>
+            <h2>3</h2>
 
             <p>Cities Covered</p>
 
@@ -69,7 +69,9 @@
     <!-- DONATIONS TABLE -->
 
     <h2 class="section-heading">
+
         Current Food Donations
+
     </h2>
 
     <table>
@@ -87,7 +89,34 @@
 
         </thead>
 
-        <tbody id="donationTable">
+        <tbody>
+
+            <tr>
+
+                <td>Cooked Food</td>
+                <td>Serves 10 People</td>
+                <td>Greater Noida</td>
+                <td>Pending Pickup</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Packed Food</td>
+                <td>Serves 20 People</td>
+                <td>Noida</td>
+                <td>Assigned</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Cooked Food</td>
+                <td>Serves 10 People</td>
+                <td>Pari Chowk</td>
+                <td>Delivered</td>
+
+            </tr>
 
         </tbody>
 
@@ -111,11 +140,7 @@
 
             <strong>Suggested NGO:</strong>
 
-            <span id="recommendedNgo">
-
-                Loading...
-
-            </span>
+            Helping Hand | ✅ Verified NGO
 
         </p>
 
@@ -131,11 +156,7 @@
 
             <strong>Reason:</strong>
 
-            <span id="recommendationReason">
-
-                Loading...
-
-            </span>
+            Closest NGO serving Greater Noida with immediate pickup availability and food distribution capacity.
 
         </p>
 
@@ -163,164 +184,29 @@
 
         </thead>
 
-        <tbody id="ngoTable">
+        <tbody>
+
+            <tr>
+
+                <td>Helping Hand</td>
+                <td>Shraddha Mishra</td>
+                <td>Greater Noida</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Tathastu</td>
+                <td>Aarohi Mishra</td>
+                <td>Noida, Greater Noida</td>
+
+            </tr>
 
         </tbody>
 
     </table>
 
 </div>
-
-<script>
-
-async function loadDashboard() {
-
-    try {
-
-        const donationResponse =
-            await fetch("http://localhost:3000/donations");
-
-        const donations =
-            await donationResponse.json();
-
-        const ngoResponse =
-            await fetch("http://localhost:3000/ngos");
-
-        const ngos =
-            await ngoResponse.json();
-
-
-        // STATS
-
-        document.getElementById(
-            "totalDonations"
-        ).innerText = donations.length;
-
-        document.getElementById(
-            "totalNGOs"
-        ).innerText = ngos.length;
-
-        document.getElementById(
-            "mealsSaved"
-        ).innerText = donations.length * 10;
-
-
-        // CITIES COVERED
-
-        const uniqueCities = [
-
-            ...new Set(
-
-                donations.map(
-                    donation =>
-                        donation.location
-                            .trim()
-                            .toLowerCase()
-                )
-
-            )
-
-        ];
-
-        document.getElementById(
-            "citiesCovered"
-        ).innerText =
-            uniqueCities.length;
-
-
-        // DONATION TABLE
-
-        const donationTable =
-            document.getElementById(
-                "donationTable"
-            );
-
-        donationTable.innerHTML = "";
-
-        donations.forEach(donation => {
-
-            donationTable.innerHTML += `
-
-            <tr>
-
-                <td>${donation.foodType}</td>
-
-                <td>${donation.quantity}</td>
-
-                <td>${donation.location}</td>
-
-                <td>Pending Pickup</td>
-
-            </tr>
-
-            `;
-
-        });
-
-
-        // NGO TABLE
-
-        const ngoTable =
-            document.getElementById(
-                "ngoTable"
-            );
-
-        ngoTable.innerHTML = "";
-
-        ngos.forEach(ngo => {
-
-            ngoTable.innerHTML += `
-
-            <tr>
-
-                <td>${ngo.ngoName}</td>
-
-                <td>${ngo.contactPerson}</td>
-
-                <td>${ngo.areasServed}</td>
-
-            </tr>
-
-            `;
-
-        });
-
-
-        // AI RECOMMENDATION
-
-        if (ngos.length > 0) {
-
-            document.getElementById(
-                "recommendedNgo"
-            ).innerHTML =
-
-                `${ngos[0].ngoName} | ✅ Verified NGO`;
-
-            document.getElementById(
-                "recommendationReason"
-            ).innerText =
-
-                `Recommended based on availability and service coverage in ${ngos[0].areasServed}.`;
-
-        }
-
-    }
-
-    catch(error) {
-
-        console.error(error);
-
-        alert(
-            "Unable to load dashboard data."
-        );
-
-    }
-
-}
-
-loadDashboard();
-
-</script>
 
 </body>
 
